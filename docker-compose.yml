@@ -9,8 +9,11 @@ services:
     environment:
       - MYSQL_RANDOM_ROOT_PASSWORD=yes
       - MYSQL_DATABASE=codetest
-      - MYSQL_USER=codetest
-      - MYSQL_PASSWORD=swordfish
+      - MYSQL_USER=${MYSQL_USER}
+      - MYSQL_PASSWORD=${MYSQL_PASSWORD}
+    volumes:
+      # used to automatically create the tables defined in the schemas folder
+      - "./schemas:/docker-entrypoint-initdb.d"
     ports:
       - "3306:3306"
     restart: always
@@ -19,5 +22,30 @@ services:
     image: example-python
     build: images/example-python
     command: ["./example.py"]
+    volumes:
+      - ./data:/data0
+
+  upload-data:
+    image: upload
+    build: images/upload
+    command: ["python","-u", "./upload_datasets.py"]
+    environment:
+      - MYSQL_RANDOM_ROOT_PASSWORD=yes
+      - MYSQL_DATABASE=codetest
+      - MYSQL_USER=${MYSQL_USER}
+      - MYSQL_PASSWORD=${MYSQL_PASSWORD}
+      - DATA_FILES=places,people
+    volumes:
+      - ./data:/data0
+
+  query-data:
+    image: query
+    build: images/query
+    command: ["python","-u", "./query_datasets.py"]
+    environment:
+      - MYSQL_RANDOM_ROOT_PASSWORD=yes
+      - MYSQL_DATABASE=codetest
+      - MYSQL_USER=${MYSQL_USER}
+      - MYSQL_PASSWORD=${MYSQL_PASSWORD}
     volumes:
       - ./data:/data0
