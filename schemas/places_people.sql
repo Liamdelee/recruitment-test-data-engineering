@@ -6,7 +6,7 @@ create table `places` (
   `county` varchar(80) not null,
   `country` varchar(56) not null,
   primary key (`id`),
-  UNIQUE (city, county, country)
+  UNIQUE KEY (city, county, country)
 );
 
 drop table if exists people;

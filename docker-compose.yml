@@ -24,3 +24,16 @@ services:
     command: ["./example.py"]
     volumes:
       - ./data:/data0
+
+  upload-data:
+    image: upload
+    build: images/upload
+    command: ["python","-u", "./upload_datasets.py"]
+    environment:
+      - MYSQL_RANDOM_ROOT_PASSWORD=yes
+      - MYSQL_DATABASE=codetest
+      - MYSQL_USER=${MYSQL_USER}
+      - MYSQL_PASSWORD=${MYSQL_PASSWORD}
+      - DATA_FILES=places,people
+    volumes:
+      - ./data:/data0
