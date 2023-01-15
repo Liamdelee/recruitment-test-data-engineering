@@ -1,5 +1,6 @@
 from common.logger import setup_logger
 from common.database_connection import database_connection
+import json
 
 import pandas as pd
 
@@ -15,7 +16,12 @@ output = pd.read_sql(query,database)
 def write_to_json(data):
     json_file = '/data/summary_output.json'
     logger.info(f"Writing data to json file: {json_file}")
-    data.set_index("country").to_json(json_file, orient='index')
+    ## basic writing to json file
+    #data.to_json(json_file, orient='columns')
+    json_data = json.loads(data.set_index("country").to_json(orient='index'))
+    new_json = {key: value["population"] for key, value in json_data.items()}
+    with open(json_file, "w") as outfile:
+        json.dump(new_json, outfile)
     logger.info(f"Data written to json file: {json_file}")
 
 def write_to_csv(data):
