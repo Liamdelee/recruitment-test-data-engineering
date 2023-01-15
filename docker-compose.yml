@@ -30,7 +30,7 @@ services:
   upload-data:
     image: upload
     build: images/upload
-    command: ["python","-u", "./upload_datasets.py"]
+    command: ["python","-u", "./upload_csv_datasets.py"]
     environment:
       - MYSQL_RANDOM_ROOT_PASSWORD=yes
       - MYSQL_DATABASE=codetest
@@ -38,7 +38,7 @@ services:
       - MYSQL_PASSWORD=${MYSQL_PASSWORD}
       - DATA_FILES=places,people
     volumes:
-      - ./data:/data0
+      - ./data:/data
 
   query-data:
     image: query
@@ -50,4 +50,4 @@ services:
       - MYSQL_USER=${MYSQL_USER}
       - MYSQL_PASSWORD=${MYSQL_PASSWORD}
     volumes:
-      - ./data:/data0
+      - ./data:/data
