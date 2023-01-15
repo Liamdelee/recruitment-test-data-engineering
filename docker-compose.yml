@@ -39,6 +39,8 @@ services:
       - DATA_FILES=places,people
     volumes:
       - ./data:/data
+      - ./images/common:/app/common
+      - ./logs:/app/logs
 
   query-data:
     image: query
@@ -51,3 +53,5 @@ services:
       - MYSQL_PASSWORD=${MYSQL_PASSWORD}
     volumes:
       - ./data:/data
+      - ./images/common:/app/common
+      - ./logs:/app/logs
