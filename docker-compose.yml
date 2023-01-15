@@ -5,6 +5,12 @@ x-mysql-variables: &mysql_variables
   MYSQL_USER: ${MYSQL_USER}
   MYSQL_PASSWORD: ${MYSQL_PASSWORD}
 
+x-volumes-variables: &volumes_variables
+  volumes:
+    - ./data:/data
+    - ./images/common:/app/common
+    - ./logs:/app/logs
+
 services:
   database:
     image: mysql:8.0
@@ -37,10 +43,7 @@ services:
     environment:
       <<: *mysql_variables
       DATA_FILES: places,people
-    volumes:
-      - ./data:/data
-      - ./images/common:/app/common
-      - ./logs:/app/logs
+    <<: *volumes_variables
 
   query-data:
     image: query
@@ -48,7 +51,4 @@ services:
     command: ["python","-u", "./query_datasets.py"]
     environment:
       <<: *mysql_variables
-    volumes:
-      - ./data:/data
-      - ./images/common:/app/common
-      - ./logs:/app/logs
+    <<: *volumes_variables
