@@ -8,15 +8,24 @@ services:
       - "--default-authentication-plugin=mysql_native_password"
     environment:
       - MYSQL_RANDOM_ROOT_PASSWORD=yes
-      - MYSQL_DATABASE=codetest
+      - MYSQL_DATABASE=${MYSQL_DATABASE}
       - MYSQL_USER=${MYSQL_USER}
       - MYSQL_PASSWORD=${MYSQL_PASSWORD}
     volumes:
-      # used to automatically create the tables defined in the schemas folder
+      # used to automatically create the tables defined in the schemas folder on start-up of database
       - "./schemas:/docker-entrypoint-initdb.d"
     ports:
       - "3306:3306"
     restart: always
+
+  # used if mysql is already up and running and new table schemas need to be added
+  create-tables:
+    image: mysql:8.0
+    command: sh -c "mysql -h database -u ${MYSQL_USER} -p${MYSQL_PASSWORD} ${MYSQL_DATABASE} < /schemas/test.sql"
+    depends_on:
+      - database
+    volumes:
+      - "./schemas:/schemas"
 
   upload-data:
     image: upload
