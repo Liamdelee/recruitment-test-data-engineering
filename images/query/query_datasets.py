@@ -1,34 +1,28 @@
-import os
 from common.logger import setup_logger
+from common.database_connection import database_connection
 
 import pandas as pd
-from sqlalchemy import create_engine
 
-logger = setup_logger("./logs/query_database.log", "DEBUG", "query_database_logger")
+logger = setup_logger("./logs/logs.log", "DEBUG", "query_database_logger")
 
-user = os.environ.get("MYSQL_USER")
-password = os.environ.get("MYSQL_PASSWORD")
-db_name = os.environ.get("MYSQL_DATABASE")
-
-con_str = f"mysql://{user}:{password}@database/{db_name}"
-
-try:
-    # Connect to the database
-    engine = create_engine(con_str)
-except Exception as e:
-    logger.error(f"Failed to create engine: {e}")
+database = database_connection()
 
 query = "SELECT country, COUNT(*) as population FROM people JOIN places ON people.place_of_birth = places.city GROUP BY country;"
 
 logger.info(f"query used: {query}")
-output = pd.read_sql(query,engine)
+output = pd.read_sql(query,database)
 
-# output data to json file
-json_file = '/data/summary_output.json'
-logger.info(f"writing data to json file: {json_file}")
-output.set_index("country").to_json(json_file,orient='index')
+def write_to_json(data):
+    json_file = '/data/summary_output.json'
+    logger.info(f"Writing data to json file: {json_file}")
+    data.set_index("country").to_json(json_file, orient='index')
+    logger.info(f"Data written to json file: {json_file}")
 
-#output data to csv file
-csv_file = '/data/summary_output.csv'
-logger.info(f"writing data to csv file: {csv_file}")
-output.to_csv('/data/summary_output.csv', sep=',', index=False)
+def write_to_csv(data):
+    csv_file = '/data/summary_output.csv'
+    logger.info(f"writing data to csv file: {csv_file}")
+    data.to_csv('/data/summary_output.csv', sep=',', index=False)
+    logger.info(f"Data written to csv file: {csv_file}")
+
+write_to_json(output)
+write_to_csv(output)

@@ -1,24 +1,13 @@
-import os
 from common.logger import setup_logger
-
+from common.database_connection import database_connection
+import os
 import pandas as pd
-from sqlalchemy import create_engine
 
-logger = setup_logger("./logs/upload_csv_database.log", "DEBUG", "upload_csv_database")
+logger = setup_logger("./logs/logs.log", "DEBUG", "upload_csv_database")
 
 DATA_FILES = os.environ.get("DATA_FILES").split(',')
 
-user = os.environ.get("MYSQL_USER")
-password = os.environ.get("MYSQL_PASSWORD")
-db_name = os.environ.get("MYSQL_DATABASE")
-
-con_str = f"mysql://{user}:{password}@database/{db_name}"
-
-try:
-    # Connect to the database
-    engine = create_engine(con_str)
-except Exception as e:
-    logger.error(f"Failed to create engine: {e}")
+database = database_connection()
 
 for data_files in DATA_FILES:
 
@@ -29,4 +18,4 @@ for data_files in DATA_FILES:
 
     # Write the DataFrame data to the MYSQL database
     logger.info(f"inserting data into: {data_files}")
-    df.to_sql(data_files, engine, if_exists='append', index=False)
+    df.to_sql(data_files, database, if_exists='append', index=False)
