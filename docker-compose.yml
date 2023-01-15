@@ -18,14 +18,14 @@ services:
       - "3306:3306"
     restart: always
 
-  # used if mysql is already up and running and new table schemas need to be added
-  create-tables:
-    image: mysql:8.0
-    command: sh -c "mysql -h database -u ${MYSQL_USER} -p${MYSQL_PASSWORD} ${MYSQL_DATABASE} < /schemas/test.sql"
-    depends_on:
-      - database
-    volumes:
-      - "./schemas:/schemas"
+  # # used if mysql is already up and running and new table schemas need to be added
+  # create-tables:
+  #   image: mysql:8.0
+  #   command: sh -c "mysql -h database -u ${MYSQL_USER} -p${MYSQL_PASSWORD} ${MYSQL_DATABASE} < /schemas/test.sql"
+  #   depends_on:
+  #     - database
+  #   volumes:
+  #     - "./schemas:/schemas"
 
   upload-data:
     image: upload
