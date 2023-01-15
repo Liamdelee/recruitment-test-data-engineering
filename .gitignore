@@ -1,3 +1,4 @@
 .DS_Store
 images/common/__pycache__/
+images/query/__pycache__/
 logs/
