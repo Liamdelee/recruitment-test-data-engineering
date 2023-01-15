@@ -9,6 +9,7 @@ x-volumes-variables: &volumes_variables
   volumes:
     - ./data:/data
     - ./images/common:/app/common
+    - ./images/query:/app/query
     - ./logs:/app/logs
 
 services:
@@ -45,10 +46,20 @@ services:
       DATA_FILES: places,people
     <<: *volumes_variables
 
+  pytest:
+    image: tests
+    build: images/tests
+    command: ["pytest", "test_query_dataset.py"]
+    depends_on:
+      - upload-data
+    <<: *volumes_variables
+
   query-data:
     image: query
     build: images/query
     command: ["python","-u", "./query_datasets.py"]
+    depends_on:
+      - pytest
     environment:
       <<: *mysql_variables
     <<: *volumes_variables
