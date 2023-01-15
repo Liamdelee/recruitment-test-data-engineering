@@ -16,8 +16,8 @@ engine = create_engine(con_str)
 
 for data_files in DATA_FILES:
 
-    # Read the CSV file into a DataFrame
-    df = pd.read_csv(f'/data0/{data_files}.csv')
+    # Read the CSV file into a pandas DataFrame
+    df = pd.read_csv(f'/data/input/{data_files}.csv')
 
-    # Write the DataFrame to the database
+    # Write the DataFrame data to the MYSQL database
     df.to_sql(data_files, engine, if_exists='append', index=False)
