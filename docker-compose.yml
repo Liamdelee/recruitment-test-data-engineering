@@ -1,5 +1,10 @@
 version: "3.7"
 
+x-mysql-variables: &mysql_variables
+  MYSQL_DATABASE: ${MYSQL_DATABASE}
+  MYSQL_USER: ${MYSQL_USER}
+  MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+
 services:
   database:
     image: mysql:8.0
@@ -7,10 +12,8 @@ services:
     command:
       - "--default-authentication-plugin=mysql_native_password"
     environment:
-      - MYSQL_RANDOM_ROOT_PASSWORD=yes
-      - MYSQL_DATABASE=${MYSQL_DATABASE}
-      - MYSQL_USER=${MYSQL_USER}
-      - MYSQL_PASSWORD=${MYSQL_PASSWORD}
+      <<: *mysql_variables
+      MYSQL_RANDOM_ROOT_PASSWORD: yes
     volumes:
       # used to automatically create the tables defined in the schemas folder on start-up of database
       - "./schemas:/docker-entrypoint-initdb.d"
@@ -32,11 +35,8 @@ services:
     build: images/upload
     command: ["python","-u", "./upload_csv_datasets.py"]
     environment:
-      - MYSQL_RANDOM_ROOT_PASSWORD=yes
-      - MYSQL_DATABASE=codetest
-      - MYSQL_USER=${MYSQL_USER}
-      - MYSQL_PASSWORD=${MYSQL_PASSWORD}
-      - DATA_FILES=places,people
+      <<: *mysql_variables
+      DATA_FILES: places,people
     volumes:
       - ./data:/data
 
@@ -45,9 +45,6 @@ services:
     build: images/query
     command: ["python","-u", "./query_datasets.py"]
     environment:
-      - MYSQL_RANDOM_ROOT_PASSWORD=yes
-      - MYSQL_DATABASE=codetest
-      - MYSQL_USER=${MYSQL_USER}
-      - MYSQL_PASSWORD=${MYSQL_PASSWORD}
+      <<: *mysql_variables
     volumes:
       - ./data:/data
