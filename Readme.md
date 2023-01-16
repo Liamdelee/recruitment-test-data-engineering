@@ -100,7 +100,7 @@ docker compose run database mysql --host=database --user=codetest --password=swo
 This container is used for when MySQL is already running and a new table needs to be created.
 Here you can change the example "/schemas/test.sql" to the new sql file for your table.
 
-### Example scripts one by one
+### Example scripts all in one
 
 Make sure that a docker compose build has been run before continuing.
 
