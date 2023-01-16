@@ -95,30 +95,44 @@ Optional: if you want to connect to the MySQL database via the command-line clie
 docker compose run database mysql --host=database --user=codetest --password=swordfish codetest
 ```
 
-### Example scripts
+### Extra container in comments
 
-We have provided example code written in C, Node, Python, R, Ruby, and Swift. These show how to use a programme in a separate Docker container to connect to the database, using an ORM library where appropriate, to load data from a CSV file, and to query data to output as a JSON file. There should be regarded as illustrative; it is fine to use any of these examples as the basis of your own solution, but we would prefer that you use technologies that you feel comfortable with.
+This container is used for when MySQL is already running and a new table needs to be created.
+Here you can change the example "/schemas/test.sql" to the new sql file for your table.
 
-Make sure the MySQL database is running, and then load the example schema with:
+### Example scripts one by one
+
+Make sure that a docker compose build has been run before continuing.
+
+Since there is a depends on clause for the pytest and query-data container, and if the MySQL database is up, you can also just run:
 
 ```
-docker compose run --no-TTY database mysql --host=database --user=codetest --password=swordfish codetest <example_schema.sql
+docker compose run query-data
 ```
 
-Then make sure that the containers have been built with `docker compose build` and run one or more of the sample programmes with:
+To get all the steps in one run.
+
+### Example scripts one by one
+
+Make sure that a docker compose build has been run before continuing.
+
+Make sure the MySQL database is running, and then load the places and people schema with:
 
 ```
-docker compose run example-c
-docker compose run example-node
-docker compose run example-python
-docker compose run example-r
-docker compose run example-ruby
-docker compose run example-swift
+docker compose run upload-data
 ```
 
-In each case, the programme loads data from the data/example.csv file into that table, and exports data from the database table to a JSON file in the data folder. Note that the scripts do not truncate the table, so each one you run will add additional content.
+run the following command for the unit tests to see if he can write the csv file and json file:
 
-### Cleaning up
+```
+docker compose run pytest
+```
+
+run the following command for the result data sets in json and one in csv for future reference:
+
+```
+docker compose run query-data
+```
 
 To tidy up, bringing down all the containers and deleting them.
 
